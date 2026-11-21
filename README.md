@@ -10,11 +10,9 @@ Run the site and contact endpoint together with `npm run dev:full` (`http://loca
 
 ## Deploy
 
-Build the frontend with `npm run build` and publish the `dist/` directory to a static host such as Vercel or Netlify. In that host's build environment, set `VITE_API_BASE_URL` to the public origin of the API, for example `https://your-api-service.onrender.com` (no trailing slash), then redeploy the frontend.
+Vercel detects Node functions in the root `api/` directory and deploys them with the Vite site. Push to `main` and wait for the deployment. In Vercel project settings, add these environment variables for Production (and Preview if needed): `SMTP_HOST=smtp.gmail.com`, `SMTP_PORT=465`, `SMTP_SECURE=true`, `SMTP_USER=chikotipranavkumar@gmail.com`, `SMTP_PASSWORD` (a newly generated Google App Password), `CONTACT_TO=chikotipranavkumar@gmail.com`, and `CONTACT_FROM=chikotipranavkumar@gmail.com`.
 
-Deploy the Express API as a Node service from this repository with start command `npm run server`. On the backend host, set `CLIENT_ORIGIN` to the exact deployed frontend origin and configure `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_USER`, `SMTP_PASSWORD`, `CONTACT_TO`, and `CONTACT_FROM`. Never set SMTP credentials as `VITE_*` variables; those are included in browser code. The backend must allow outbound SMTP on port 465 for Gmail.
-
-After both deploys, verify `https://your-api-service.onrender.com/api/health` returns `{"ok":true}`, then submit the contact form on the deployed frontend. A static-only deployment cannot send mail without the separate API service.
+Do not set `VITE_API_BASE_URL` for this same-origin Vercel deployment. Do not prefix SMTP variables with `VITE_`; those are exposed to browser code. Redeploy after adding or changing environment variables. Verify `https://portfolio-murex-six-z2gf30w3xr.vercel.app/api/health` returns `{"ok":true}`, then submit the contact form. Vercel's Node runtime permits authenticated SMTP on port 465, and the function awaits delivery before responding.
 
 This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
 
