@@ -1,4 +1,5 @@
 import 'dotenv/config'
+import cors from 'cors'
 import express from 'express'
 import rateLimit from 'express-rate-limit'
 import helmet from 'helmet'
@@ -6,9 +7,11 @@ import nodemailer from 'nodemailer'
 
 const app = express()
 const port = Number(process.env.PORT) || 3001
+const allowedOrigins = new Set((process.env.CLIENT_ORIGIN || 'http://localhost:5173').split(',').map((origin) => origin.trim()).filter(Boolean))
 
 app.disable('x-powered-by')
 app.use(helmet())
+app.use(cors({ origin: (origin, callback) => callback(null, !origin || allowedOrigins.has(origin)) }))
 app.use(express.json({ limit: '10kb' }))
 app.use('/api/contact', rateLimit({ windowMs: 15 * 60 * 1000, limit: 5, standardHeaders: 'draft-8', legacyHeaders: false }))
 

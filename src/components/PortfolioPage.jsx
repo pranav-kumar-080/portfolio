@@ -5,6 +5,7 @@ import { achievements, certifications, codingProfiles, education, experience, in
 
 const filters = ['All work', 'AI/ML', 'GenAI', 'Web Development', 'Software Development']
 const currentYear = new Date().getFullYear()
+const apiBaseUrl = (import.meta.env.VITE_API_BASE_URL || '').replace(/\/+$/, '')
 
 function ExternalAnchor({ href, children, ...props }) {
   return href ? <a href={href} target="_blank" rel="noreferrer" {...props}>{children}</a> : null
@@ -96,7 +97,7 @@ export default function PortfolioPage() {
     const form = event.currentTarget
     const payload = Object.fromEntries(new FormData(form).entries())
     try {
-      const response = await fetch('/api/contact', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
+      const response = await fetch(`${apiBaseUrl}/api/contact`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
       const responseText = await response.text()
       let result
       try {
