@@ -30,7 +30,7 @@ app.post('/api/contact', async (request, response) => {
   }
 
   try {
-    const transporter = nodemailer.createTransport({ host: SMTP_HOST, port: Number(SMTP_PORT) || 587, secure: process.env.SMTP_SECURE === 'true', auth: { user: SMTP_USER, pass: SMTP_PASSWORD } })
+    const transporter = nodemailer.createTransport({ host: SMTP_HOST, port: Number(SMTP_PORT) || 587, secure: process.env.SMTP_SECURE === 'true', auth: { user: SMTP_USER, pass: SMTP_PASSWORD.replace(/\s+/g, '') } })
     await transporter.sendMail({ from: CONTACT_FROM, to: CONTACT_TO, replyTo: { name: name.trim(), address: email.trim() }, subject: `Portfolio contact: ${subject.trim()}`, text: `From: ${name.trim()} <${email.trim()}>\n\n${message.trim()}` })
     return response.status(200).json({ ok: true })
   } catch (error) {

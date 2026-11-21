@@ -97,7 +97,13 @@ export default function PortfolioPage() {
     const payload = Object.fromEntries(new FormData(form).entries())
     try {
       const response = await fetch('/api/contact', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
-      const result = await response.json()
+      const responseText = await response.text()
+      let result
+      try {
+        result = responseText ? JSON.parse(responseText) : {}
+      } catch {
+        throw new Error('The contact service returned an unexpected response. Check that the API is running, then try again.')
+      }
       if (!response.ok) throw new Error(result.error || 'Message could not be sent.')
       form.reset()
       setContactStatus({ kind: 'success', message: 'Message sent. Thanks for reaching out.' })
